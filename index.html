@@ -1,0 +1,1437 @@
+<!DOCTYPE html>
+<html lang="fa" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>پیام‌رسان</title>
+<link href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@300;400;500;600;700;800&family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --blue:#2AABEE;--blue-d:#1a96d9;--blue-l:#e8f4fd;
+  --green:#31c158;--red:#e74c3c;
+  --gray:#8a8a8a;--gray-l:#f7f8fa;--gray-m:#e8eaed;--gray-d:#d0d3d8;
+  --white:#ffffff;--text:#1a1a2e;--sub:#6b7280;
+  --sh-sm:0 1px 3px rgba(0,0,0,.07);
+  --sh-md:0 4px 16px rgba(0,0,0,.08);
+  --sh-lg:0 8px 32px rgba(0,0,0,.12);
+  --r:16px;--r-sm:12px;--r-xs:8px;
+  --font-size:15px;
+  --chat-bg:#f0f2f5;
+  --msg-out:#2AABEE;
+  --msg-corner:18px;
+}
+html,body{height:100%;font-family:'Vazirmatn',sans-serif;background:#fff;overflow:hidden;-webkit-tap-highlight-color:transparent;font-size:var(--font-size)}
+::-webkit-scrollbar{width:0}
+
+.screen{position:fixed;inset:0;display:flex;flex-direction:column;background:#fff;transition:transform .28s cubic-bezier(.4,0,.2,1),opacity .28s;z-index:1;will-change:transform}
+.screen.hidden{transform:translateX(100%);opacity:0;pointer-events:none}
+.screen.active{transform:none;opacity:1;pointer-events:all;z-index:2}
+
+/* LOGIN */
+#sc-login{background:#fff}
+.login-wrap{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:32px 24px}
+.login-logo{width:80px;height:80px;background:linear-gradient(135deg,#2AABEE,#1a96d9);border-radius:28px;display:flex;align-items:center;justify-content:center;margin-bottom:28px;box-shadow:0 8px 24px rgba(42,171,238,.3)}
+.login-logo svg{width:44px;height:44px}
+.login-title{font-size:26px;font-weight:800;color:var(--text);margin-bottom:8px;letter-spacing:-.5px}
+.login-sub{font-size:14px;color:var(--sub);text-align:center;line-height:1.7;margin-bottom:40px}
+.phone-field{width:100%;border:2px solid var(--gray-m);border-radius:var(--r);padding:14px 16px;display:flex;align-items:center;gap:12px;transition:border-color .2s;background:#fff;margin-bottom:14px}
+.phone-field:focus-within{border-color:var(--blue)}
+.country-flag{font-size:22px;flex-shrink:0}
+.phone-code{font-size:15px;font-weight:600;color:var(--text);flex-shrink:0;padding-left:10px;border-left:1.5px solid var(--gray-d)}
+.phone-inp{flex:1;border:none;outline:none;font-family:'Vazirmatn',sans-serif;font-size:15px;color:var(--text);background:transparent;direction:ltr;text-align:left}
+.phone-inp::placeholder{color:#c0c4cc;direction:rtl;text-align:right}
+.login-btn{width:100%;padding:15px;background:linear-gradient(135deg,#2AABEE,#1a96d9);color:#fff;border:none;border-radius:var(--r);font-family:'Vazirmatn',sans-serif;font-size:16px;font-weight:700;cursor:pointer;transition:all .2s;margin-bottom:12px}
+.login-btn:active{transform:scale(.98);opacity:.9}
+.login-note{font-size:12px;color:var(--sub);text-align:center;line-height:1.7}
+.login-confirm-box{width:100%;background:#fff;border:2px solid var(--gray-m);border-radius:var(--r);padding:20px;margin-bottom:16px}
+.login-confirm-num{font-size:22px;font-weight:800;color:var(--text);margin:6px 0 12px;direction:ltr;text-align:center;letter-spacing:2px}
+.confirm-btns{display:flex;gap:12px}
+.edit-btn{flex:1;padding:13px;background:var(--gray-l);color:var(--blue);border:none;border-radius:var(--r-sm);font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+.yes-btn{flex:1;padding:13px;background:linear-gradient(135deg,#2AABEE,#1a96d9);color:#fff;border:none;border-radius:var(--r-sm);font-family:'Vazirmatn',sans-serif;font-size:15px;font-weight:700;cursor:pointer}
+
+/* TOPBAR */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:14px 16px 12px;background:#fff;border-bottom:1px solid var(--gray-m);flex-shrink:0}
+.topbar-center{flex:1;display:flex;flex-direction:column;align-items:flex-start}
+.topbar-title{font-size:20px;font-weight:800;color:var(--text);letter-spacing:-.4px}
+.topbar-sub{font-size:12px;color:var(--sub)}
+.icon-btn{width:40px;height:40px;border:none;background:none;cursor:pointer;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .15s;color:var(--gray);flex-shrink:0}
+.icon-btn:active{background:var(--gray-l)}
+.back-btn{color:var(--blue)}
+
+.main{flex:1;overflow-y:auto;-webkit-overflow-scrolling:touch}
+
+/* BOTTOM NAV */
+.bottom-nav{display:flex;align-items:stretch;background:#fff;border-top:1px solid var(--gray-m);padding-bottom:env(safe-area-inset-bottom);flex-shrink:0}
+.nav-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 0 8px;gap:3px;cursor:pointer;border:none;background:none;color:var(--gray);transition:color .18s}
+.nav-item.active{color:var(--blue)}
+.nav-item .nav-icon{width:24px;height:24px;display:flex;align-items:center;justify-content:center}
+.nav-item .nav-lbl{font-size:10px;font-weight:500}
+.nav-item.active .nav-lbl{font-weight:700}
+
+/* AVATAR */
+.av{border-radius:50%;background:linear-gradient(135deg,var(--blue),#6c5ce7);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;flex-shrink:0;overflow:hidden}
+.av img{width:100%;height:100%;object-fit:cover}
+
+/* CHAT LIST */
+.chat-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--gray-m);transition:background .12s;background:#fff}
+.chat-row:active{background:var(--gray-l)}
+.chat-info{flex:1;min-width:0}
+.chat-name{font-size:15px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:5px}
+.chat-preview{font-size:13px;color:var(--sub);margin-top:2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-meta{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0}
+.chat-time{font-size:11px;color:var(--sub)}
+.badge{background:var(--blue);color:#fff;font-size:10px;font-weight:700;min-width:18px;height:18px;border-radius:9px;display:flex;align-items:center;justify-content:center;padding:0 4px}
+
+/* FAB */
+.fab{position:fixed;left:16px;bottom:76px;width:54px;height:54px;border-radius:50%;background:linear-gradient(135deg,#2AABEE,#1a96d9);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;box-shadow:0 4px 16px rgba(42,171,238,.4);z-index:10;transition:transform .2s}
+.fab:active{transform:scale(.9)}
+.compose-bd{position:fixed;inset:0;background:rgba(0,0,0,.18);z-index:50;opacity:0;pointer-events:none;transition:opacity .25s}
+.compose-bd.open{opacity:1;pointer-events:all}
+.compose-menu{position:fixed;left:16px;z-index:51;background:#fff;border-radius:var(--r);box-shadow:var(--sh-lg);padding:6px 0;width:200px;transform:scale(.8) translateY(16px);opacity:0;pointer-events:none;transition:transform .25s cubic-bezier(.34,1.56,.64,1),opacity .2s;transform-origin:bottom left}
+.compose-menu.open{transform:scale(1) translateY(0);opacity:1;pointer-events:all}
+.c-item{display:flex;align-items:center;gap:14px;padding:13px 16px;cursor:pointer;transition:background .12s}
+.c-item:active{background:var(--gray-l)}
+.c-icon{width:34px;height:34px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.c-lbl{font-size:14px;font-weight:600;color:var(--text)}
+
+/* CONTACT */
+.contact-row{display:flex;align-items:center;gap:12px;padding:12px 16px;cursor:pointer;border-bottom:1px solid var(--gray-m);transition:background .12s}
+.contact-row:active{background:var(--gray-l)}
+.sel-check{width:22px;height:22px;border-radius:50%;border:2px solid var(--gray-d);background:#fff;display:flex;align-items:center;justify-content:center;transition:all .18s;flex-shrink:0}
+.sel-check.on{background:var(--blue);border-color:var(--blue)}
+
+/* FORM */
+.form-card{background:#fff;border-radius:var(--r);margin:12px 16px;border:1.5px solid var(--gray-m);overflow:hidden}
+.form-grp{padding:12px 16px;border-bottom:1px solid var(--gray-m)}
+.form-grp:last-child{border-bottom:none}
+.form-lbl{font-size:11px;color:var(--blue);font-weight:700;margin-bottom:5px;text-transform:uppercase;letter-spacing:.5px}
+.form-inp{width:100%;border:none;outline:none;font-family:'Vazirmatn',sans-serif;font-size:15px;color:var(--text);background:transparent;direction:rtl}
+.form-inp::placeholder{color:#c0c4cc}
+.form-err{font-size:11px;color:var(--red);margin-top:4px;display:none}
+.form-err.show{display:block}
+.sec-title{padding:16px 16px 8px;font-size:12px;color:var(--blue);font-weight:700;text-transform:uppercase;letter-spacing:.5px}
+
+/* SETTINGS LIST */
+.s-section{background:#fff;border-radius:var(--r);margin:10px 16px;border:1.5px solid var(--gray-m);overflow:hidden}
+.s-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--gray-m);cursor:pointer;transition:background .12s}
+.s-row:last-child{border-bottom:none}
+.s-row:active{background:var(--gray-l)}
+.s-ico{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.s-info{flex:1;min-width:0}
+.s-lbl{font-size:14px;font-weight:600;color:var(--text)}
+.s-sub{font-size:12px;color:var(--sub);margin-top:1px}
+.s-val{font-size:13px;color:var(--blue);white-space:nowrap;font-weight:500}
+.s-arr{color:var(--gray-d);flex-shrink:0}
+
+/* TOGGLE */
+.tog{width:46px;height:26px;border-radius:13px;background:var(--gray-d);position:relative;cursor:pointer;transition:background .25s;flex-shrink:0}
+.tog.on{background:var(--blue)}
+.tog-th{position:absolute;top:3px;right:3px;width:20px;height:20px;border-radius:50%;background:#fff;box-shadow:0 1px 4px rgba(0,0,0,.2);transition:right .25s}
+.tog.on .tog-th{right:calc(100% - 23px)}
+
+/* SHEET */
+.sh-bd{position:fixed;inset:0;background:rgba(0,0,0,.25);z-index:100;opacity:0;pointer-events:none;transition:opacity .3s}
+.sh-bd.open{opacity:1;pointer-events:all}
+.sheet{position:fixed;bottom:0;left:0;right:0;background:#fff;border-radius:24px 24px 0 0;z-index:101;transform:translateY(100%);transition:transform .35s cubic-bezier(.4,0,.2,1);padding-bottom:env(safe-area-inset-bottom);max-height:90dvh;display:flex;flex-direction:column}
+.sheet.open{transform:translateY(0)}
+.sh-handle{width:40px;height:4px;border-radius:2px;background:var(--gray-d);margin:10px auto 0;flex-shrink:0}
+.sh-title{font-size:17px;font-weight:800;color:var(--text);padding:14px 20px 10px;border-bottom:1px solid var(--gray-m);flex-shrink:0;display:flex;align-items:center;justify-content:space-between}
+.sh-body{flex:1;overflow-y:auto}
+
+/* PROFILE PAGE - Telegram style */
+.profile-header{background:var(--gray-l);padding:28px 16px 0;display:flex;flex-direction:column;align-items:center;gap:0;border-bottom:1px solid var(--gray-m)}
+.profile-av-wrap{position:relative;margin-bottom:10px}
+.profile-av-edit{position:absolute;bottom:2px;right:2px;width:28px;height:28px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;border:2px solid var(--gray-l);cursor:pointer}
+.profile-cursive-name{font-family:'Dancing Script',cursive;font-size:28px;font-weight:700;color:var(--text);margin-bottom:2px}
+.profile-status{font-size:13px;color:var(--blue);margin-bottom:12px}
+.profile-action-btns{display:flex;gap:10px;width:100%;margin-bottom:16px}
+.pab{flex:1;background:#fff;border:1.5px solid var(--gray-m);border-radius:var(--r-sm);padding:10px 6px;display:flex;flex-direction:column;align-items:center;gap:5px;cursor:pointer;transition:background .15s}
+.pab:active{background:var(--gray-l)}
+.pab-icon{width:28px;height:28px;display:flex;align-items:center;justify-content:center;color:var(--blue)}
+.pab-lbl{font-size:11px;font-weight:600;color:var(--text)}
+.music-bar{background:#fff;border:1.5px solid var(--gray-m);border-radius:20px;padding:7px 14px;display:flex;align-items:center;gap:8px;width:100%;margin-bottom:16px;cursor:pointer}
+.music-icon{width:18px;height:18px;color:var(--blue);flex-shrink:0}
+.music-text{font-size:13px;color:var(--text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.music-arr{color:var(--gray-d);flex-shrink:0}
+.profile-info-card{background:#fff;border-radius:var(--r);margin:12px 16px;border:1.5px solid var(--gray-m);overflow:hidden}
+.pinfo-row{padding:12px 16px;border-bottom:1px solid var(--gray-m)}
+.pinfo-row:last-child{border-bottom:none}
+.pinfo-val{font-size:15px;color:var(--text);font-weight:500;margin-bottom:2px}
+.pinfo-key{font-size:12px;color:var(--sub)}
+.posts-tabs{display:flex;border-bottom:2px solid var(--gray-m);background:#fff;margin-top:12px}
+.ptab{flex:1;padding:12px;text-align:center;font-size:13px;font-weight:600;color:var(--sub);cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;transition:all .2s}
+.ptab.active{color:var(--blue);border-bottom-color:var(--blue)}
+
+/* SETTINGS - Telegram style header */
+.settings-profile-header{padding:16px;display:flex;align-items:center;gap:14px;background:var(--gray-l);border-bottom:1px solid var(--gray-m)}
+.settings-profile-info{flex:1;min-width:0}
+.settings-profile-name{font-size:17px;font-weight:800;color:var(--text)}
+.settings-profile-sub{font-size:12px;color:var(--sub);margin-top:2px}
+.settings-profile-av{position:relative;cursor:pointer}
+.settings-av-cam{position:absolute;bottom:0;right:0;width:22px;height:22px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;border:2px solid var(--gray-l)}
+.accounts-section{margin:10px 16px;background:#fff;border-radius:var(--r);border:1.5px solid var(--gray-m);overflow:hidden}
+.accounts-title{font-size:11px;color:var(--blue);font-weight:700;padding:10px 16px 4px;text-transform:uppercase;letter-spacing:.5px}
+.account-row{display:flex;align-items:center;gap:12px;padding:11px 16px;cursor:pointer;border-top:1px solid var(--gray-m);transition:background .12s}
+.account-row:active{background:var(--gray-l)}
+.account-initials{width:40px;height:40px;border-radius:50%;display:flex;align-items:center;justify-content:center;color:#fff;font-size:16px;font-weight:700;flex-shrink:0}
+
+/* CHAT SCREEN */
+.ct-bar{display:flex;align-items:center;gap:10px;padding:10px 12px;background:#fff;border-bottom:1px solid var(--gray-m);flex-shrink:0}
+.ct-info{flex:1;min-width:0}
+.ct-name{font-size:16px;font-weight:700;color:var(--text);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ct-status{font-size:11px;color:var(--sub)}
+.msgs{flex:1;overflow-y:auto;padding:10px 12px;background:var(--chat-bg);display:flex;flex-direction:column;gap:4px}
+.msg{max-width:80%;padding:9px 13px;border-radius:var(--msg-corner);font-size:var(--font-size);line-height:1.55;word-break:break-word;animation:msgIn .18s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
+.msg.out{background:var(--msg-out);color:#fff;align-self:flex-start;border-bottom-left-radius:5px}
+.msg.in{background:#fff;color:var(--text);align-self:flex-end;border-bottom-right-radius:5px;box-shadow:var(--sh-sm)}
+.msg-time{font-size:10px;margin-top:3px;opacity:.65}
+.msg.out .msg-time{color:rgba(255,255,255,.8)}
+.msg.in .msg-time{color:var(--sub);text-align:right}
+.msg-sender{font-size:11px;font-weight:700;color:var(--blue);margin-bottom:2px}
+.ci-bar{display:flex;align-items:flex-end;gap:8px;padding:10px 12px;background:#fff;border-top:1px solid var(--gray-m);flex-shrink:0}
+.ci{flex:1;border:1.5px solid var(--gray-m);border-radius:20px;padding:10px 14px;font-family:'Vazirmatn',sans-serif;font-size:14px;outline:none;background:var(--gray-l);direction:rtl;transition:border-color .2s;max-height:100px;overflow-y:auto;line-height:1.5}
+.ci:focus{border-color:var(--blue);background:#fff}
+.ci:empty::before{content:attr(data-ph);color:#c0c4cc}
+.send{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,#2AABEE,#1a96d9);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:transform .15s;flex-shrink:0;box-shadow:0 2px 8px rgba(42,171,238,.35)}
+.send:active{transform:scale(.88)}
+.date-sep{text-align:center;font-size:11px;color:var(--sub);margin:8px 0;display:flex;align-items:center;gap:8px}
+.date-sep::before,.date-sep::after{content:'';flex:1;height:1px;background:var(--gray-m)}
+
+/* LANG */
+.lang-row{display:flex;align-items:center;gap:14px;padding:13px 16px;border-bottom:1px solid var(--gray-m);cursor:pointer;transition:background .12s}
+.lang-row:active{background:var(--gray-l)}
+.lang-radio{width:20px;height:20px;border-radius:50%;border:2px solid var(--gray-d);display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:all .18s}
+.lang-radio.sel{border-color:var(--blue)}
+.lang-radio.sel::after{content:'';width:10px;height:10px;border-radius:50%;background:var(--blue);display:block}
+.lang-name{font-size:15px;font-weight:600;color:var(--text)}
+.lang-native{font-size:12px;color:var(--sub)}
+
+/* SLIDER */
+.slider-wrap{padding:8px 0}
+input[type=range]{-webkit-appearance:none;width:100%;height:4px;border-radius:2px;background:var(--gray-m);outline:none;direction:ltr}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:22px;height:22px;border-radius:50%;background:var(--blue);cursor:pointer;box-shadow:0 2px 6px rgba(42,171,238,.4)}
+
+/* WALLPAPER GRID */
+.wp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;padding:12px 16px}
+.wp-item{aspect-ratio:9/16;border-radius:12px;cursor:pointer;border:3px solid transparent;transition:border-color .15s,transform .15s}
+.wp-item.sel{border-color:var(--blue);transform:scale(.95)}
+.wp-item:active{transform:scale(.92)}
+
+/* EMPTY */
+.empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:100%;gap:14px;color:var(--sub);padding:40px;text-align:center}
+.empty svg{opacity:.25}
+.empty p{font-size:14px;line-height:1.6}
+
+/* GROUP PHOTO */
+.gp-pick{width:88px;height:88px;border-radius:50%;background:var(--gray-l);border:3px dashed var(--gray-d);display:flex;flex-direction:column;align-items:center;justify-content:center;cursor:pointer;gap:4px;margin:0 auto;overflow:hidden}
+
+/* TOAST */
+.toast{position:fixed;bottom:90px;left:50%;transform:translateX(-50%) translateY(10px);background:rgba(26,26,46,.9);color:#fff;padding:10px 20px;border-radius:24px;font-size:13px;font-weight:600;z-index:999;opacity:0;pointer-events:none;transition:all .3s;white-space:nowrap;backdrop-filter:blur(8px)}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* STORAGE BAR */
+.st-bar-wrap{margin:0 16px;height:6px;border-radius:3px;background:var(--gray-m);overflow:hidden}
+.st-bar{height:100%;background:linear-gradient(to left,var(--blue),var(--green));border-radius:3px}
+
+/* DEVICES */
+.dev-row{display:flex;align-items:flex-start;gap:12px;padding:14px 16px;border-bottom:1px solid var(--gray-m)}
+.dev-icon{width:44px;height:44px;border-radius:12px;background:#e8f9f0;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.dev-online{color:var(--green)}
+.unblock-btn{font-size:12px;color:var(--red);font-weight:700;padding:5px 12px;border:1.5px solid var(--red);border-radius:12px;background:none;cursor:pointer;font-family:'Vazirmatn',sans-serif;flex-shrink:0}
+
+/* SPLASH */
+#sc-splash{background:linear-gradient(135deg,#2AABEE,#1a96d9);z-index:999}
+.splash-inner{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.splash-logo{width:96px;height:96px;background:rgba(255,255,255,.2);border-radius:32px;display:flex;align-items:center;justify-content:center}
+.splash-title{font-size:28px;font-weight:800;color:#fff;letter-spacing:-.5px}
+.splash-sub{font-size:14px;color:rgba(255,255,255,.75)}
+</style>
+</head>
+<body>
+
+<!-- SPLASH -->
+<div id="sc-splash" class="screen active">
+  <div class="splash-inner">
+    <div class="splash-logo">
+      <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="splash-title">پیام‌رسان</div>
+    <div class="splash-sub">در حال بارگذاری...</div>
+  </div>
+</div>
+
+<!-- LOGIN -->
+<div id="sc-login" class="screen hidden">
+  <div class="login-wrap" id="login-step1">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+    </div>
+    <div class="login-title">خوش آمدید</div>
+    <div class="login-sub">شماره موبایل خود را وارد کنید تا<br>وارد حساب کاربری خود شوید</div>
+    <div class="phone-field">
+      <span class="country-flag">🇮🇷</span>
+      <span class="phone-code">+۹۸</span>
+      <input class="phone-inp" id="phoneInp" type="tel" placeholder="شماره موبایل" inputmode="numeric" maxlength="10">
+    </div>
+    <button class="login-btn" onclick="showConfirm()">ادامه</button>
+    <div class="login-note">با ورود، قوانین و مقررات را می‌پذیرید</div>
+  </div>
+  <div class="login-wrap" id="login-step2" style="display:none">
+    <div class="login-logo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 8 8l.95-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </div>
+    <div class="login-title">تأیید شماره</div>
+    <div class="login-sub">آیا این شماره درست است؟</div>
+    <div class="login-confirm-box">
+      <div style="font-size:13px;color:var(--sub)">شماره موبایل شما:</div>
+      <div class="login-confirm-num" id="confirmNumDisplay"></div>
+      <div class="confirm-btns">
+        <button class="edit-btn" onclick="backToPhone()">ویرایش</button>
+        <button class="yes-btn" onclick="doLogin()">بله، درست است</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CHATS -->
+<div id="sc-chats" class="screen hidden">
+  <div class="topbar">
+    <div class="topbar-title">چت‌ها</div>
+    <div style="display:flex;gap:4px">
+      <button class="icon-btn" onclick="toggleSearchBar()">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      </button>
+    </div>
+  </div>
+  <div id="searchBarWrap" style="display:none;padding:8px 16px;border-bottom:1px solid var(--gray-m)">
+    <div style="display:flex;align-items:center;gap:8px;background:var(--gray-l);border-radius:12px;padding:8px 14px">
+      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+      <input id="searchInput" type="text" placeholder="جستجو..." style="flex:1;border:none;outline:none;background:transparent;font-family:'Vazirmatn',sans-serif;font-size:14px;direction:rtl" oninput="filterChats(this.value)">
+      <button onclick="toggleSearchBar()" style="background:none;border:none;cursor:pointer;color:var(--blue);font-family:'Vazirmatn',sans-serif;font-size:12px;font-weight:600">بستن</button>
+    </div>
+  </div>
+  <div class="main" id="chats-list"></div>
+  <button class="fab" id="fabBtn" onclick="toggleCompose()">
+    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+  </button>
+  <nav class="bottom-nav">
+    <button class="nav-item active" onclick="goTab('chats',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="nav-lbl">چت‌ها</span></button>
+    <button class="nav-item" onclick="goTab('contacts',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="nav-lbl">مخاطبین</span></button>
+    <button class="nav-item" onclick="goTab('settings',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><span class="nav-lbl">تنظیمات</span></button>
+    <button class="nav-item" onclick="goTab('profile',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-lbl">پروفایل</span></button>
+  </nav>
+</div>
+
+<!-- CONTACTS TAB -->
+<div id="sc-contacts" class="screen hidden">
+  <div class="topbar">
+    <div class="topbar-title">مخاطبین</div>
+    <button class="icon-btn" style="color:var(--blue)" onclick="push('sc-add-contact');resetAddContact()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg>
+    </button>
+  </div>
+  <div class="main" id="contacts-list-tab"></div>
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="goTab('chats',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="nav-lbl">چت‌ها</span></button>
+    <button class="nav-item active" onclick="goTab('contacts',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="nav-lbl">مخاطبین</span></button>
+    <button class="nav-item" onclick="goTab('settings',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><span class="nav-lbl">تنظیمات</span></button>
+    <button class="nav-item" onclick="goTab('profile',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-lbl">پروفایل</span></button>
+  </nav>
+</div>
+
+<!-- SETTINGS -->
+<div id="sc-settings" class="screen hidden">
+  <div class="topbar"><div class="topbar-title">تنظیمات</div>
+    <button class="icon-btn" onclick="push('sc-devices')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    </button>
+  </div>
+  <div class="main">
+    <!-- Settings Profile Header -->
+    <div class="settings-profile-header" onclick="goTab('profile')">
+      <div class="settings-profile-av">
+        <div class="av" id="settingsAv" style="width:60px;height:60px;font-size:22px"></div>
+        <div class="settings-av-cam">
+          <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        </div>
+      </div>
+      <div class="settings-profile-info">
+        <div class="settings-profile-name" id="settingsName">در حال بارگذاری...</div>
+        <div class="settings-profile-sub" id="settingsSub"></div>
+      </div>
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--gray-d)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+
+    <!-- Accounts -->
+    <div class="accounts-section">
+      <div class="accounts-title">حساب‌ها</div>
+      <div id="accountsList"></div>
+      <div class="account-row" onclick="addAnotherAccount()">
+        <div style="width:40px;height:40px;border-radius:50%;background:var(--blue-l);display:flex;align-items:center;justify-content:center;flex-shrink:0">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--blue)" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </div>
+        <div style="font-size:14px;font-weight:600;color:var(--blue)">افزودن حساب</div>
+      </div>
+    </div>
+
+    <div style="height:4px"></div>
+    <div class="s-section">
+      <div class="s-row" onclick="goTab('profile')">
+        <div class="s-ico" style="background:#e8f4fd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2AABEE" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
+        <div class="s-info"><div class="s-lbl">حساب کاربری</div><div class="s-sub">شماره، نام کاربری، بیو</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="push('sc-chat-settings')">
+        <div class="s-ico" style="background:#f3e8ff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/></svg></div>
+        <div class="s-info"><div class="s-lbl">ظاهر چت</div><div class="s-sub">کاغذدیواری، حالت شب، انیمیشن</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="push('sc-privacy')">
+        <div class="s-ico" style="background:#e8f9f0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>
+        <div class="s-info"><div class="s-lbl">حریم خصوصی و امنیت</div><div class="s-sub">آخرین بازدید، دستگاه‌ها، رمزعبور</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="push('sc-notif')">
+        <div class="s-ico" style="background:#fff3e0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg></div>
+        <div class="s-info"><div class="s-lbl">اعلان‌ها</div><div class="s-sub">صدا، تماس‌ها، نشانه</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="push('sc-data')">
+        <div class="s-ico" style="background:#e8f4fd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2AABEE" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div>
+        <div class="s-info"><div class="s-lbl">داده و ذخیره‌سازی</div><div class="s-sub">تنظیمات دانلود رسانه</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="showToast('پوشه‌بندی چت‌ها به زودی...')">
+        <div class="s-ico" style="background:#e3f8ff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#0097b2" stroke-width="2"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg></div>
+        <div class="s-info"><div class="s-lbl">پوشه‌های چت</div><div class="s-sub">مرتب‌سازی چت‌ها در پوشه</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="push('sc-devices')">
+        <div class="s-ico" style="background:#e8f9f0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div class="s-info"><div class="s-lbl">دستگاه‌ها</div><div class="s-sub">مدیریت دستگاه‌های متصل</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" onclick="push('sc-lang')">
+        <div class="s-ico" style="background:#fef3e8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg></div>
+        <div class="s-info"><div class="s-lbl">زبان</div><div class="s-sub" id="curLangLabel">فارسی</div></div>
+        <svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+      </div>
+      <div class="s-row" style="border-bottom:none">
+        <div class="s-ico" style="background:#fde8e8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><rect x="1" y="6" width="18" height="13" rx="2"/><polyline points="23 6 23 19"/><line x1="10" y1="6" x2="10" y2="2"/><line x1="14" y1="6" x2="14" y2="2"/><line x1="10" y1="2" x2="14" y2="2"/></svg></div>
+        <div class="s-info"><div class="s-lbl">صرفه‌جویی در باتری</div><div class="s-sub">کاهش مصرف برق</div></div>
+        <div class="tog" id="tog-power" onclick="togClick(this,'power')"><div class="tog-th"></div></div>
+      </div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="goTab('chats',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="nav-lbl">چت‌ها</span></button>
+    <button class="nav-item" onclick="goTab('contacts',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="nav-lbl">مخاطبین</span></button>
+    <button class="nav-item active" onclick="goTab('settings',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><span class="nav-lbl">تنظیمات</span></button>
+    <button class="nav-item" onclick="goTab('profile',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-lbl">پروفایل</span></button>
+  </nav>
+</div>
+
+<!-- PROFILE - Telegram Style -->
+<div id="sc-profile" class="screen hidden">
+  <div class="profile-header">
+    <!-- Avatar -->
+    <div class="profile-av-wrap">
+      <div class="av" id="profileAv" style="width:88px;height:88px;font-size:32px;cursor:pointer" onclick="document.getElementById('profilePhotoIn').click()"></div>
+      <div class="profile-av-edit" onclick="document.getElementById('profilePhotoIn').click()">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+      </div>
+      <input type="file" id="profilePhotoIn" accept="image/*" style="display:none" onchange="handleProfilePhoto(event)">
+    </div>
+    <!-- Name + status -->
+    <div class="profile-cursive-name" id="pCursiveName">نام شما</div>
+    <div class="profile-status">آنلاین</div>
+    <!-- 3 action buttons -->
+    <div class="profile-action-btns">
+      <div class="pab" onclick="document.getElementById('profilePhotoIn').click()">
+        <div class="pab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg></div>
+        <div class="pab-lbl">تنظیم عکس</div>
+      </div>
+      <div class="pab" onclick="openEditProfile()">
+        <div class="pab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg></div>
+        <div class="pab-lbl">ویرایش اطلاعات</div>
+      </div>
+      <div class="pab" onclick="goTab('settings')">
+        <div class="pab-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+        <div class="pab-lbl">تنظیمات</div>
+      </div>
+    </div>
+    <!-- Music bar -->
+    <div class="music-bar" onclick="showToast('پخش موسیقی')">
+      <svg class="music-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>
+      <span class="music-text" id="musicText">بدون آهنگ</span>
+      <svg class="music-arr" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    </div>
+  </div>
+
+  <!-- Info Card -->
+  <div class="profile-info-card">
+    <div class="pinfo-row">
+      <div class="pinfo-val" id="pPhoneDisplay">—</div>
+      <div class="pinfo-key">موبایل</div>
+    </div>
+    <div class="pinfo-row" id="pBioRow">
+      <div class="pinfo-val" id="pBioDisplay">—</div>
+      <div class="pinfo-key">بیو</div>
+    </div>
+    <div class="pinfo-row">
+      <div class="pinfo-val" id="pUsernameDisplay">—</div>
+      <div class="pinfo-key">نام کاربری</div>
+    </div>
+    <div class="pinfo-row" style="border-bottom:none">
+      <div class="pinfo-val" id="pBirthdayDisplay">—</div>
+      <div class="pinfo-key">تولد</div>
+    </div>
+  </div>
+
+  <!-- Posts Tabs -->
+  <div class="posts-tabs">
+    <div class="ptab active" onclick="switchPostTab('posts',this)">پست‌ها</div>
+    <div class="ptab" onclick="switchPostTab('archived',this)">پست‌های بایگانی</div>
+  </div>
+  <div id="postsArea" style="flex:1;background:var(--gray-l)">
+    <div class="empty">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+      <p>هنوز پستی ندارید</p>
+    </div>
+  </div>
+
+  <!-- Logout button -->
+  <div style="padding:0 16px 8px">
+    <button onclick="confirmLogout()" style="width:100%;padding:12px;background:none;border:1.5px solid var(--red);border-radius:var(--r-sm);color:var(--red);font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer">خروج از حساب</button>
+  </div>
+
+  <nav class="bottom-nav">
+    <button class="nav-item" onclick="goTab('chats',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="nav-lbl">چت‌ها</span></button>
+    <button class="nav-item" onclick="goTab('contacts',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="nav-lbl">مخاطبین</span></button>
+    <button class="nav-item" onclick="goTab('settings',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div><span class="nav-lbl">تنظیمات</span></button>
+    <button class="nav-item active" onclick="goTab('profile',this)"><div class="nav-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div><span class="nav-lbl">پروفایل</span></button>
+  </nav>
+</div>
+
+<!-- CHAT SCREEN -->
+<div id="sc-chat" class="screen hidden">
+  <div class="ct-bar">
+    <button class="icon-btn back-btn" onclick="pop()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg>
+    </button>
+    <div class="av" id="ctAv" style="width:42px;height:42px;font-size:16px"></div>
+    <div class="ct-info">
+      <div class="ct-name" id="ctName"></div>
+      <div class="ct-status" id="ctStatus"></div>
+    </div>
+    <button class="icon-btn" onclick="showToast('تماس صوتی در دسترس نیست')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.63 3.18 2 2 0 0 1 3.6 1h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L7.91 8.6a16 16 0 0 0 8 8l.95-.95a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    </button>
+    <button class="icon-btn" onclick="openSheet('chatMenu')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+    </button>
+  </div>
+  <div class="msgs" id="msgsArea"></div>
+  <div class="ci-bar">
+    <button class="icon-btn" onclick="showToast('پیوست در دسترس نیست')">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 0 1-8.49-8.49l9.19-9.19a4 4 0 0 1 5.66 5.66l-9.2 9.19a2 2 0 0 1-2.83-2.83l8.49-8.48"/></svg>
+    </button>
+    <div class="ci" id="ciField" contenteditable="true" data-ph="پیام..." onkeydown="ciKeydown(event)"></div>
+    <button class="send" onclick="sendMsg()">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
+    </button>
+  </div>
+</div>
+
+<!-- GROUP SELECT -->
+<div id="sc-group-sel" class="screen hidden">
+  <div class="topbar">
+    <button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+    <div class="topbar-center"><div class="topbar-title">اعضای گروه</div><div class="topbar-sub" id="selCount">۰ نفر انتخاب شده</div></div>
+    <button class="icon-btn" style="color:var(--blue)" onclick="goGroupInfo()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+    </button>
+  </div>
+  <div class="main" id="grp-sel-list"></div>
+</div>
+
+<!-- GROUP INFO -->
+<div id="sc-group-info" class="screen hidden">
+  <div class="topbar">
+    <button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+    <div class="topbar-title">اطلاعات گروه</div>
+    <button class="icon-btn" style="color:var(--blue)" onclick="createGroup()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </button>
+  </div>
+  <div class="main">
+    <div style="padding:24px 16px 16px;display:flex;flex-direction:column;align-items:center;gap:14px">
+      <div class="gp-pick" id="gpPick" onclick="document.getElementById('gpPhotoIn').click()">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+        <span style="font-size:11px;color:var(--gray)">عکس گروه</span>
+      </div>
+      <input type="file" id="gpPhotoIn" accept="image/*" style="display:none" onchange="handleGpPhoto(event)">
+    </div>
+    <div class="form-card">
+      <div class="form-grp" style="border-bottom:none">
+        <div class="form-lbl">نام گروه</div>
+        <input class="form-inp" id="gpNameIn" type="text" placeholder="نام گروه را وارد کنید">
+        <div class="form-err" id="gpNameErr">نام گروه را وارد کنید</div>
+      </div>
+    </div>
+    <div class="sec-title" id="gpMembTitle"></div>
+    <div id="gpMembPreview"></div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- ADD CONTACT -->
+<div id="sc-add-contact" class="screen hidden">
+  <div class="topbar">
+    <button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button>
+    <div class="topbar-title">افزودن مخاطب</div>
+    <button class="icon-btn" style="color:var(--blue)" onclick="saveNewContact()">
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+    </button>
+  </div>
+  <div class="main">
+    <div class="form-card" style="margin-top:20px">
+      <div class="form-grp"><div class="form-lbl">نام *</div><input class="form-inp" id="nc-first" type="text" placeholder="نام"><div class="form-err" id="nc-first-err">نام را وارد کنید</div></div>
+      <div class="form-grp"><div class="form-lbl">نام خانوادگی</div><input class="form-inp" id="nc-last" type="text" placeholder="نام خانوادگی"></div>
+      <div class="form-grp" style="border-bottom:none"><div class="form-lbl">شماره موبایل *</div><input class="form-inp" id="nc-phone" type="tel" placeholder="09..."><div class="form-err" id="nc-phone-err">شماره معتبر وارد کنید</div></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- NOTIFICATIONS -->
+<div id="sc-notif" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">اعلان‌ها</div></div>
+  <div class="main">
+    <div style="height:10px"></div>
+    <div class="s-section">
+      <div class="s-row"><div class="s-info"><div class="s-lbl">چت‌های خصوصی</div></div><div class="tog on" id="tog-privChat" onclick="togClick(this,'privChat')"><div class="tog-th"></div></div></div>
+      <div class="s-row"><div class="s-info"><div class="s-lbl">گروه‌ها</div></div><div class="tog on" id="tog-groups" onclick="togClick(this,'groups')"><div class="tog-th"></div></div></div>
+      <div class="s-row"><div class="s-info"><div class="s-lbl">صدای درون‌برنامه</div></div><div class="tog on" id="tog-inSound" onclick="togClick(this,'inSound')"><div class="tog-th"></div></div></div>
+      <div class="s-row"><div class="s-info"><div class="s-lbl">نمایش پیش‌نمایش</div></div><div class="tog on" id="tog-preview" onclick="togClick(this,'preview')"><div class="tog-th"></div></div></div>
+      <div class="s-row" style="border-bottom:none"><div class="s-info"><div class="s-lbl">نمایش آیکون نشانه</div></div><div class="tog on" id="tog-badge" onclick="togClick(this,'badge')"><div class="tog-th"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- PRIVACY -->
+<div id="sc-privacy" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">حریم خصوصی</div></div>
+  <div class="main">
+    <div style="height:10px"></div>
+    <div class="s-section">
+      <div class="s-row"><div class="s-ico" style="background:#e8f9f0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div><div class="s-info"><div class="s-lbl">تأیید دو مرحله‌ای</div><div class="s-sub" id="twoStepSub">خاموش</div></div><div class="tog" id="tog-twoStep" onclick="togClick(this,'twoStep');updateTwoStepSub()"><div class="tog-th"></div></div></div>
+      <div class="s-row" onclick="push('sc-blocked')"><div class="s-ico" style="background:#fde8e8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><div class="s-info"><div class="s-lbl">کاربران مسدود</div><div class="s-sub" id="blockedCountLabel">۰ نفر</div></div><svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="s-row" onclick="openPrivOpt('lastSeen','آخرین بازدید')"><div class="s-info"><div class="s-lbl">آخرین بازدید</div></div><span class="s-val" id="priv-lastSeen">همه</span><svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="s-row" onclick="openPrivOpt('phone','شماره موبایل')"><div class="s-info"><div class="s-lbl">شماره موبایل</div></div><span class="s-val" id="priv-phone">هیچ‌کس</span><svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+      <div class="s-row" onclick="openPrivOpt('photo','عکس پروفایل')" style="border-bottom:none"><div class="s-info"><div class="s-lbl">عکس پروفایل</div></div><span class="s-val" id="priv-photo">همه</span><svg class="s-arr" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg></div>
+    </div>
+  </div>
+</div>
+
+<!-- BLOCKED -->
+<div id="sc-blocked" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">کاربران مسدود</div></div>
+  <div class="main" id="blocked-list">
+    <div class="empty" id="blocked-empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg><p>کاربر مسدودی ندارید</p></div>
+  </div>
+</div>
+
+<!-- DATA -->
+<div id="sc-data" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">داده و ذخیره‌سازی</div></div>
+  <div class="main">
+    <div style="height:10px"></div>
+    <div class="s-section">
+      <div class="s-row" style="cursor:default"><div class="s-ico" style="background:#e8f4fd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2AABEE" stroke-width="2"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/><path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/></svg></div><div class="s-info"><div class="s-lbl">فضای مصرفی</div></div><span class="s-val">۱۳۲.۷ MB</span></div>
+      <div class="s-row" style="cursor:default;border-bottom:none"><div class="s-ico" style="background:#e8f9f0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="s-info"><div class="s-lbl">مصرف داده</div></div><span class="s-val">۸۰۲.۲ MB</span></div>
+    </div>
+    <div style="padding:8px 16px 14px">
+      <div class="st-bar-wrap"><div class="st-bar" style="width:35%"></div></div>
+      <div style="font-size:11px;color:var(--sub);margin-top:5px;text-align:center">۳۵٪ از حافظه استفاده شده</div>
+    </div>
+    <div class="sec-title">دانلود خودکار</div>
+    <div class="s-section">
+      <div class="s-row"><div class="s-info"><div class="s-lbl">در حین استفاده از داده</div></div><div class="tog" id="tog-mobDl" onclick="togClick(this,'mobDl')"><div class="tog-th"></div></div></div>
+      <div class="s-row"><div class="s-info"><div class="s-lbl">متصل به Wi-Fi</div></div><div class="tog" id="tog-wifiDl" onclick="togClick(this,'wifiDl')"><div class="tog-th"></div></div></div>
+      <div class="s-row" style="border-bottom:none"><div class="s-info"><div class="s-lbl">پخش جریانی</div></div><div class="tog on" id="tog-stream" onclick="togClick(this,'stream')"><div class="tog-th"></div></div></div>
+    </div>
+  </div>
+</div>
+
+<!-- CHAT SETTINGS -->
+<div id="sc-chat-settings" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">ظاهر چت</div></div>
+  <div class="main">
+    <div style="height:10px"></div>
+    <div class="sec-title" style="padding-top:8px">اندازه متن</div>
+    <div class="s-section" style="padding:16px">
+      <div style="display:flex;align-items:center;gap:12px">
+        <span style="font-size:12px;color:var(--sub)">کوچک</span>
+        <div class="slider-wrap" style="flex:1"><input type="range" id="fontSizeSlider" min="12" max="22" value="15" oninput="changeFontSize(this)"></div>
+        <span style="font-size:12px;color:var(--sub)">بزرگ</span>
+        <span style="font-size:13px;color:var(--blue);font-weight:700;min-width:24px;text-align:center" id="fontSizeVal">۱۵</span>
+      </div>
+    </div>
+    <div class="sec-title">رنگ پیام</div>
+    <div class="s-section" style="padding:14px 16px">
+      <div style="display:flex;gap:12px;flex-wrap:wrap">
+        <div style="width:32px;height:32px;border-radius:50%;background:#2AABEE;cursor:pointer;border:3px solid var(--blue)" onclick="setMsgColor('#2AABEE',this)"></div>
+        <div style="width:32px;height:32px;border-radius:50%;background:#27ae60;cursor:pointer;border:3px solid transparent" onclick="setMsgColor('#27ae60',this)"></div>
+        <div style="width:32px;height:32px;border-radius:50%;background:#8b5cf6;cursor:pointer;border:3px solid transparent" onclick="setMsgColor('#8b5cf6',this)"></div>
+        <div style="width:32px;height:32px;border-radius:50%;background:#e67e22;cursor:pointer;border:3px solid transparent" onclick="setMsgColor('#e67e22',this)"></div>
+        <div style="width:32px;height:32px;border-radius:50%;background:#e74c3c;cursor:pointer;border:3px solid transparent" onclick="setMsgColor('#e74c3c',this)"></div>
+        <div style="width:32px;height:32px;border-radius:50%;background:#2c3e50;cursor:pointer;border:3px solid transparent" onclick="setMsgColor('#2c3e50',this)"></div>
+      </div>
+    </div>
+    <div class="sec-title">کاغذدیواری</div>
+    <div class="wp-grid">
+      <div class="wp-item sel" style="background:linear-gradient(135deg,#eef2f5,#dfe8ec)" onclick="setWallpaper('default',this)"></div>
+      <div class="wp-item" style="background:linear-gradient(135deg,#fff9c4,#fff3e0)" onclick="setWallpaper('warm',this)"></div>
+      <div class="wp-item" style="background:linear-gradient(135deg,#e8f5e9,#c8e6c9)" onclick="setWallpaper('green',this)"></div>
+      <div class="wp-item" style="background:linear-gradient(135deg,#e3f2fd,#bbdefb)" onclick="setWallpaper('blue',this)"></div>
+      <div class="wp-item" style="background:linear-gradient(135deg,#fce4ec,#f8bbd0)" onclick="setWallpaper('pink',this)"></div>
+      <div class="wp-item" style="background:linear-gradient(135deg,#1a1a2e,#16213e)" onclick="setWallpaper('dark',this)"></div>
+    </div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- LANGUAGE -->
+<div id="sc-lang" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">زبان</div></div>
+  <div class="main">
+    <div style="height:8px"></div>
+    <div class="s-section" id="langList"></div>
+    <div style="height:16px"></div>
+  </div>
+</div>
+
+<!-- DEVICES -->
+<div id="sc-devices" class="screen hidden">
+  <div class="topbar"><button class="icon-btn back-btn" onclick="pop()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><line x1="19" y1="12" x2="5" y2="12"/><polyline points="12 19 5 12 12 5"/></svg></button><div class="topbar-title">دستگاه‌ها</div></div>
+  <div class="main">
+    <div style="height:10px"></div>
+    <div class="s-section">
+      <div class="dev-row" style="border-bottom:none">
+        <div class="dev-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg></div>
+        <div><div style="font-size:14px;font-weight:700;color:var(--text)">این دستگاه</div><div style="font-size:12px;color:var(--sub)"><span class="dev-online">● آنلاین</span> · نسخه ۱.۰</div></div>
+      </div>
+    </div>
+    <div style="margin:12px 16px">
+      <button onclick="showToast('نشست دیگری وجود ندارد')" style="width:100%;padding:13px;background:none;border:1.5px solid var(--red);border-radius:var(--r-sm);color:var(--red);font-family:'Vazirmatn',sans-serif;font-size:14px;font-weight:700;cursor:pointer">✋ پایان دادن به همه نشست‌های دیگر</button>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SHEETS ══ -->
+<!-- New Channel -->
+<div class="sh-bd" id="sh-bd-newChannel" onclick="closeSheet('newChannel')"></div>
+<div class="sheet" id="sh-newChannel">
+  <div class="sh-handle"></div>
+  <div class="sh-title">ساخت کانال<button class="icon-btn" style="color:var(--blue)" onclick="createChannel()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+  <div class="sh-body">
+    <div class="form-card" style="margin-top:16px">
+      <div class="form-grp"><div class="form-lbl">نام کانال *</div><input class="form-inp" id="ch-name" type="text" placeholder="نام کانال"><div class="form-err" id="ch-name-err">نام را وارد کنید</div></div>
+      <div class="form-grp" style="border-bottom:none"><div class="form-lbl">توضیحات (اختیاری)</div><input class="form-inp" id="ch-desc" type="text" placeholder="درباره کانال..."></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- Edit Profile -->
+<div class="sh-bd" id="sh-bd-editProfile" onclick="closeSheet('editProfile')"></div>
+<div class="sheet" id="sh-editProfile">
+  <div class="sh-handle"></div>
+  <div class="sh-title">ویرایش پروفایل<button class="icon-btn" style="color:var(--blue)" onclick="saveProfile()"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg></button></div>
+  <div class="sh-body">
+    <div class="form-card" style="margin-top:16px">
+      <div class="form-grp"><div class="form-lbl">نام</div><input class="form-inp" id="ep-first" type="text" placeholder="نام"></div>
+      <div class="form-grp"><div class="form-lbl">نام خانوادگی</div><input class="form-inp" id="ep-last" type="text" placeholder="نام خانوادگی"></div>
+      <div class="form-grp"><div class="form-lbl">نام کاربری</div><input class="form-inp" id="ep-username" type="text" placeholder="@username" style="direction:ltr;text-align:left"></div>
+      <div class="form-grp"><div class="form-lbl">تولد</div><input class="form-inp" id="ep-birthday" type="text" placeholder="مثلاً: Aug 06"></div>
+      <div class="form-grp" style="border-bottom:none"><div class="form-lbl">بیو</div><input class="form-inp" id="ep-bio" type="text" placeholder="درباره خودتان..."></div>
+    </div>
+    <div style="height:20px"></div>
+  </div>
+</div>
+
+<!-- Privacy Option -->
+<div class="sh-bd" id="sh-bd-privOpt" onclick="closeSheet('privOpt')"></div>
+<div class="sheet" id="sh-privOpt">
+  <div class="sh-handle"></div>
+  <div class="sh-title" id="privOptTitle">تنظیم</div>
+  <div class="sh-body"><div id="privOptBody" style="padding:12px 0"></div><div style="height:20px"></div></div>
+</div>
+
+<!-- Chat Menu -->
+<div class="sh-bd" id="sh-bd-chatMenu" onclick="closeSheet('chatMenu')"></div>
+<div class="sheet" id="sh-chatMenu">
+  <div class="sh-handle"></div>
+  <div class="sh-body" style="padding:8px 0">
+    <div class="c-item" onclick="muteChat()"><div class="c-icon" style="background:#e8f4fd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2AABEE" stroke-width="2"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/><line x1="1" y1="1" x2="23" y2="23"/></svg></div><span class="c-lbl">بی‌صدا کردن</span></div>
+    <div class="c-item" onclick="blockFromChat()"><div class="c-icon" style="background:#fde8e8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e74c3c" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/></svg></div><span class="c-lbl" style="color:var(--red)">مسدود کردن</span></div>
+    <div class="c-item" onclick="clearChat()"><div class="c-icon" style="background:#fff3e0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg></div><span class="c-lbl" style="color:var(--red)">پاک کردن تاریخچه</span></div>
+    <div style="height:8px"></div>
+  </div>
+</div>
+
+<!-- Compose Menu -->
+<div class="compose-bd" id="cmpBd" onclick="closeCompose()"></div>
+<div class="compose-menu" id="cmpMenu">
+  <div class="c-item" onclick="openNewChannel()"><div class="c-icon" style="background:#e8f4fd"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2AABEE" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="c-lbl">کانال جدید</span></div>
+  <div class="c-item" onclick="openNewGroup()"><div class="c-icon" style="background:#e8f9f0"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div><span class="c-lbl">گروه جدید</span></div>
+  <div class="c-item" onclick="closeCompose();push('sc-add-contact');resetAddContact()"><div class="c-icon" style="background:#fef3e8"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#e67e22" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/></svg></div><span class="c-lbl">مخاطب جدید</span></div>
+  <div class="c-item" onclick="closeCompose();openDirectChat()"><div class="c-icon" style="background:#f3e8ff"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#8b5cf6" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div><span class="c-lbl">چت جدید</span></div>
+</div>
+
+<!-- Direct Chat -->
+<div class="sh-bd" id="sh-bd-directChat" onclick="closeSheet('directChat')"></div>
+<div class="sheet" id="sh-directChat">
+  <div class="sh-handle"></div>
+  <div class="sh-title">چت جدید</div>
+  <div class="sh-body" id="directChatList" style="padding:8px 0"></div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ═══════════════════════════════════════════
+// CONSTANTS
+// ═══════════════════════════════════════════
+const SESSION_KEY = 'msg_session_v2';   // stores { phone }
+const DB_KEY      = 'msg_data_v2';      // stores { [phone]: accountData }
+
+const WALLPAPERS = {
+  default:'linear-gradient(135deg,#eef2f5,#dfe8ec)',
+  warm:'linear-gradient(135deg,#fff9c4,#fff3e0)',
+  green:'linear-gradient(135deg,#e8f5e9,#c8e6c9)',
+  blue:'linear-gradient(135deg,#e3f2fd,#bbdefb)',
+  pink:'linear-gradient(135deg,#fce4ec,#f8bbd0)',
+  dark:'linear-gradient(135deg,#1a1a2e,#16213e)',
+};
+const LANGUAGES = [
+  {code:'fa',name:'فارسی',native:'فارسی'},
+  {code:'en',name:'انگلیسی',native:'English'},
+  {code:'ar',name:'عربی',native:'العربية'},
+  {code:'tr',name:'ترکی',native:'Türkçe'},
+  {code:'de',name:'آلمانی',native:'Deutsch'},
+  {code:'fr',name:'فرانسوی',native:'Français'},
+  {code:'es',name:'اسپانیایی',native:'Español'},
+  {code:'ru',name:'روسی',native:'Русский'},
+];
+const COLORS=['#2AABEE','#6c5ce7','#27ae60','#e67e22','#e74c3c','#e91e8c','#00b894','#0984e3','#6ab04c','#f9ca24'];
+
+// ═══════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════
+let S = {
+  phone:'', contacts:[], chats:[], messages:{}, blocked:[],
+  profile:{first:'',last:'',phone:'',bio:'',photo:'',username:'',birthday:''},
+  settings:{}, privacy:{phone:'هیچ‌کس',lastSeen:'همه',photo:'همه'},
+  lang:'fa', wallpaper:'default', msgColor:'#2AABEE',
+  currentChat:null, stackHistory:[], selectedMembers:[], gpPhoto:'',
+};
+
+// ═══════════════════════════════════════════
+// DB HELPERS
+// ═══════════════════════════════════════════
+function loadAllData() {
+  try { return JSON.parse(localStorage.getItem(DB_KEY)) || {}; } catch { return {}; }
+}
+function saveAllData(db) {
+  try { localStorage.setItem(DB_KEY, JSON.stringify(db)); } catch(e) { console.warn('storage error',e); }
+}
+function getAccountData(phone) {
+  const db = loadAllData();
+  if (!db[phone]) db[phone] = {
+    contacts:[], chats:[], messages:{}, blocked:[],
+    profile:{first:'',last:'',phone,bio:'',photo:'',username:'',birthday:''},
+    settings:{}, privacy:{phone:'هیچ‌کس',lastSeen:'همه',photo:'همه'},
+    lang:'fa', wallpaper:'default', msgColor:'#2AABEE',
+  };
+  return db[phone];
+}
+function persistS() {
+  if (!S.phone) return;
+  const db = loadAllData();
+  db[S.phone] = {
+    contacts:S.contacts, chats:S.chats, messages:S.messages, blocked:S.blocked,
+    profile:S.profile, settings:S.settings, privacy:S.privacy,
+    lang:S.lang, wallpaper:S.wallpaper, msgColor:S.msgColor,
+  };
+  saveAllData(db);
+}
+
+// ═══════════════════════════════════════════
+// SESSION - KEY FUNCTIONS
+// ═══════════════════════════════════════════
+function saveSession(phone) {
+  try { localStorage.setItem(SESSION_KEY, JSON.stringify({ phone, ts: Date.now() })); } catch {}
+}
+function loadSession() {
+  try { return JSON.parse(localStorage.getItem(SESSION_KEY)) || null; } catch { return null; }
+}
+function clearSession() {
+  try { localStorage.removeItem(SESSION_KEY); } catch {}
+}
+function getAllPhones() {
+  const db = loadAllData();
+  return Object.keys(db).filter(k => db[k] && db[k].profile);
+}
+
+// ═══════════════════════════════════════════
+// BOOT SEQUENCE
+// ═══════════════════════════════════════════
+window.addEventListener('DOMContentLoaded', () => {
+  setTimeout(() => {
+    const session = loadSession();
+    if (session && session.phone) {
+      // Auto-login!
+      loginWithPhone(session.phone);
+    } else {
+      // Show login screen
+      showScreen('sc-login', false);
+    }
+  }, 800); // show splash for 800ms
+});
+
+// ═══════════════════════════════════════════
+// LOGIN
+// ═══════════════════════════════════════════
+function showConfirm() {
+  const val = document.getElementById('phoneInp').value.trim();
+  if (!val || val.length < 9) { showToast('شماره معتبر وارد کنید'); return; }
+  document.getElementById('confirmNumDisplay').textContent = '+۹۸ ' + toFaNum(val);
+  document.getElementById('login-step1').style.display = 'none';
+  document.getElementById('login-step2').style.display = 'flex';
+}
+function backToPhone() {
+  document.getElementById('login-step1').style.display = 'flex';
+  document.getElementById('login-step2').style.display = 'none';
+}
+function doLogin() {
+  const phone = document.getElementById('phoneInp').value.trim();
+  loginWithPhone(phone);
+}
+function loginWithPhone(phone) {
+  S.phone = phone;
+  const acct = getAccountData(phone);
+  S.contacts  = acct.contacts  || [];
+  S.chats     = acct.chats     || [];
+  S.messages  = acct.messages  || {};
+  S.blocked   = acct.blocked   || [];
+  S.profile   = acct.profile   || {first:'',last:'',phone,bio:'',photo:'',username:'',birthday:''};
+  S.settings  = acct.settings  || {};
+  S.privacy   = acct.privacy   || {phone:'هیچ‌کس',lastSeen:'همه',photo:'همه'};
+  S.lang      = acct.lang      || 'fa';
+  S.wallpaper = acct.wallpaper || 'default';
+  S.msgColor  = acct.msgColor  || '#2AABEE';
+  // Ensure profile has phone
+  if (!S.profile.phone) S.profile.phone = '0' + phone;
+
+  // Save session so refresh auto-logs in
+  saveSession(phone);
+
+  // Apply visual settings
+  document.documentElement.style.setProperty('--msg-out', S.msgColor);
+
+  // Render all sections
+  renderProfile();
+  renderChats();
+  renderContactsTab();
+  renderLangList();
+  renderAccountsList();
+  updateBlockedLabel();
+  updateTwoStepSub();
+  updatePrivacyLabels();
+  renderSettingsHeader();
+
+  showScreen('sc-chats', false);
+  showToast('خوش آمدید 👋');
+}
+
+// ═══════════════════════════════════════════
+// NAVIGATION
+// ═══════════════════════════════════════════
+function showScreen(id, pushHist=true) {
+  if (pushHist) {
+    const active = document.querySelector('.screen.active');
+    if (active && active.id !== id) {
+      S.stackHistory.push(active.id);
+      active.classList.remove('active');
+      active.classList.add('hidden');
+    }
+  } else {
+    document.querySelectorAll('.screen').forEach(s => {
+      s.classList.remove('active'); s.classList.add('hidden');
+    });
+  }
+  const el = document.getElementById(id);
+  el.classList.remove('hidden');
+  el.classList.add('active');
+}
+function push(id) { showScreen(id, true); }
+function pop() {
+  const prev = S.stackHistory.pop();
+  if (!prev) return;
+  const active = document.querySelector('.screen.active');
+  if (active) { active.classList.remove('active'); active.classList.add('hidden'); }
+  document.getElementById(prev).classList.remove('hidden');
+  document.getElementById(prev).classList.add('active');
+}
+
+const TAB_SCREENS = {
+  chats:'sc-chats', contacts:'sc-contacts', settings:'sc-settings', profile:'sc-profile'
+};
+function goTab(tab) {
+  closeCompose();
+  S.stackHistory = [];
+  showScreen(TAB_SCREENS[tab] || 'sc-chats', false);
+  // Update active state in all bottom navs
+  document.querySelectorAll('.nav-item').forEach(b => {
+    const oc = b.getAttribute('onclick')||'';
+    b.classList.toggle('active', oc.includes("'"+tab+"'"));
+  });
+}
+
+// ═══════════════════════════════════════════
+// TOAST
+// ═══════════════════════════════════════════
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t = setTimeout(() => t.classList.remove('show'), 2400);
+}
+
+// ═══════════════════════════════════════════
+// SEARCH
+// ═══════════════════════════════════════════
+let searchOpen = false;
+function toggleSearchBar() {
+  searchOpen = !searchOpen;
+  document.getElementById('searchBarWrap').style.display = searchOpen ? 'block' : 'none';
+  if (!searchOpen) { document.getElementById('searchInput').value=''; renderChats(); }
+  else document.getElementById('searchInput').focus();
+}
+function filterChats(q) { renderChats(q); }
+
+// ═══════════════════════════════════════════
+// COMPOSE
+// ═══════════════════════════════════════════
+let composeOpen = false;
+function toggleCompose() { composeOpen ? closeCompose() : openCompose(); }
+function openCompose() {
+  composeOpen = true;
+  const fab = document.getElementById('fabBtn').getBoundingClientRect();
+  const menu = document.getElementById('cmpMenu');
+  menu.style.bottom = (window.innerHeight - fab.top + 8) + 'px';
+  document.getElementById('cmpBd').classList.add('open');
+  menu.classList.add('open');
+}
+function closeCompose() {
+  composeOpen = false;
+  document.getElementById('cmpBd').classList.remove('open');
+  document.getElementById('cmpMenu').classList.remove('open');
+}
+
+// ═══════════════════════════════════════════
+// SHEETS
+// ═══════════════════════════════════════════
+function openSheet(name) {
+  document.getElementById('sh-bd-'+name).classList.add('open');
+  document.getElementById('sh-'+name).classList.add('open');
+}
+function closeSheet(name) {
+  document.getElementById('sh-bd-'+name).classList.remove('open');
+  document.getElementById('sh-'+name).classList.remove('open');
+}
+
+// ═══════════════════════════════════════════
+// TOGGLE
+// ═══════════════════════════════════════════
+function togClick(el, key) {
+  el.classList.toggle('on');
+  S.settings[key] = el.classList.contains('on');
+  persistS();
+}
+
+// ═══════════════════════════════════════════
+// MULTI-ACCOUNT
+// ═══════════════════════════════════════════
+function renderAccountsList() {
+  const phones = getAllPhones().filter(p => p !== S.phone);
+  const el = document.getElementById('accountsList');
+  el.innerHTML = '';
+  phones.forEach(p => {
+    const data = getAccountData(p);
+    const prof = data.profile || {};
+    const name = (prof.first || '') + ' ' + (prof.last || '');
+    const initials = name.trim() ? name.trim()[0] : p[0] || '?';
+    const row = document.createElement('div');
+    row.className = 'account-row';
+    row.innerHTML = `
+      <div class="account-initials" style="background:${rndColor()}">${initials}</div>
+      <div style="flex:1">
+        <div style="font-size:14px;font-weight:700;color:var(--text)">${name.trim() || 'کاربر'}</div>
+        <div style="font-size:12px;color:var(--sub)">0${p}</div>
+      </div>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--gray-d)" stroke-width="2"><polyline points="15 18 9 12 15 6"/></svg>
+    `;
+    row.onclick = () => switchAccount(p);
+    el.appendChild(row);
+  });
+}
+function addAnotherAccount() {
+  // Persist current then go to login
+  persistS();
+  document.getElementById('login-step1').style.display = 'flex';
+  document.getElementById('login-step2').style.display = 'none';
+  document.getElementById('phoneInp').value = '';
+  showScreen('sc-login', false);
+  showToast('شماره حساب جدید را وارد کنید');
+}
+function switchAccount(phone) {
+  persistS();
+  loginWithPhone(phone);
+  showToast('حساب تغییر کرد');
+}
+
+// ═══════════════════════════════════════════
+// SETTINGS HEADER
+// ═══════════════════════════════════════════
+function renderSettingsHeader() {
+  const p = S.profile;
+  const fullName = ((p.first||'') + ' ' + (p.last||'')).trim();
+  document.getElementById('settingsName').textContent = fullName || 'نام خود را وارد کنید';
+  const sub = [];
+  if (p.phone) sub.push(p.phone);
+  if (p.username) sub.push(p.username);
+  document.getElementById('settingsSub').textContent = sub.join(' • ');
+  const av = document.getElementById('settingsAv');
+  if (p.photo) { av.innerHTML=`<img src="${p.photo}">`; av.style.background='none'; }
+  else { av.innerHTML=fullName?fullName[0]:'؟'; av.style.background='linear-gradient(135deg,#2AABEE,#6c5ce7)'; }
+}
+
+// ═══════════════════════════════════════════
+// CONTACTS
+// ═══════════════════════════════════════════
+function resetAddContact() {
+  ['nc-first','nc-last','nc-phone'].forEach(id => document.getElementById(id).value='');
+  ['nc-first-err','nc-phone-err'].forEach(id => document.getElementById(id).classList.remove('show'));
+}
+function saveNewContact() {
+  const first = document.getElementById('nc-first').value.trim();
+  const last  = document.getElementById('nc-last').value.trim();
+  const phone = document.getElementById('nc-phone').value.trim();
+  let ok=true;
+  if (!first){ document.getElementById('nc-first-err').classList.add('show'); ok=false; }
+  if (!phone||phone.length<7){ document.getElementById('nc-phone-err').classList.add('show'); ok=false; }
+  if (!ok) return;
+  const c={id:Date.now(), first, last, name:first+(last?' '+last:''), phone, color:rndColor()};
+  S.contacts.push(c);
+  persistS();
+  renderContactsTab();
+  pop();
+  showToast(c.name+' اضافه شد ✅');
+}
+function renderContactsTab() {
+  const list = document.getElementById('contacts-list-tab');
+  list.innerHTML = '';
+  if (!S.contacts.length) {
+    list.innerHTML='<div class="empty"><svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg><p>مخاطبی ندارید<br>با دکمه + اضافه کنید</p></div>';
+    return;
+  }
+  S.contacts.forEach(c => {
+    const row = document.createElement('div');
+    row.className = 'contact-row';
+    row.innerHTML=`<div class="av" style="width:48px;height:48px;font-size:18px;background:${c.color}">${c.name[0]}</div><div style="flex:1"><div style="font-size:15px;font-weight:600;color:var(--text)">${c.name}</div><div style="font-size:12px;color:var(--sub)">${c.phone}</div></div>`;
+    row.onclick = () => openChat(c);
+    list.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════
+// CHANNEL
+// ═══════════════════════════════════════════
+function openNewChannel() {
+  closeCompose();
+  document.getElementById('ch-name').value='';
+  document.getElementById('ch-desc').value='';
+  document.getElementById('ch-name-err').classList.remove('show');
+  openSheet('newChannel');
+}
+function createChannel() {
+  const name = document.getElementById('ch-name').value.trim();
+  if (!name){ document.getElementById('ch-name-err').classList.add('show'); return; }
+  const ch={id:Date.now(), name, type:'channel', color:rndColor()};
+  S.chats.push(ch); S.messages[ch.id]=[]; persistS(); renderChats();
+  closeSheet('newChannel');
+  showToast('کانال «'+name+'» ساخته شد ✅');
+  openChat(ch);
+}
+
+// ═══════════════════════════════════════════
+// GROUP
+// ═══════════════════════════════════════════
+function openNewGroup() {
+  closeCompose(); S.selectedMembers=[];
+  renderGroupSelList(); push('sc-group-sel');
+}
+function renderGroupSelList() {
+  const list=document.getElementById('grp-sel-list');
+  list.innerHTML='';
+  if (!S.contacts.length){ list.innerHTML='<div class="empty"><p>ابتدا مخاطب اضافه کنید</p></div>'; return; }
+  S.contacts.forEach(c=>{
+    const sel=S.selectedMembers.some(m=>m.id===c.id);
+    const row=document.createElement('div'); row.className='contact-row';
+    row.innerHTML=`<div class="sel-check ${sel?'on':''}">${sel?'<svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg>':''}</div><div class="av" style="width:44px;height:44px;font-size:16px;background:${c.color}">${c.name[0]}</div><div><div style="font-size:15px;font-weight:600;color:var(--text)">${c.name}</div><div style="font-size:12px;color:var(--sub)">${c.phone}</div></div>`;
+    row.onclick=()=>{ const idx=S.selectedMembers.findIndex(m=>m.id===c.id); idx>=0?S.selectedMembers.splice(idx,1):S.selectedMembers.push(c); renderGroupSelList(); };
+    list.appendChild(row);
+  });
+  document.getElementById('selCount').textContent=toFaNum(S.selectedMembers.length)+' نفر انتخاب شده';
+}
+function goGroupInfo() {
+  if (!S.selectedMembers.length){ showToast('حداقل یک نفر انتخاب کنید'); return; }
+  document.getElementById('gpNameIn').value=''; document.getElementById('gpNameErr').classList.remove('show');
+  document.getElementById('gpMembTitle').textContent='اعضا ('+toFaNum(S.selectedMembers.length)+' نفر)';
+  const prev=document.getElementById('gpMembPreview'); prev.innerHTML='';
+  S.selectedMembers.forEach(c=>{ const r=document.createElement('div'); r.className='contact-row'; r.style.pointerEvents='none'; r.innerHTML=`<div class="av" style="width:40px;height:40px;font-size:14px;background:${c.color}">${c.name[0]}</div><span style="font-size:14px;color:var(--text)">${c.name}</span>`; prev.appendChild(r); });
+  document.getElementById('gpPick').innerHTML='<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--gray)" stroke-width="1.8"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg><span style="font-size:11px;color:var(--gray)">عکس گروه</span>';
+  S.gpPhoto=''; push('sc-group-info');
+}
+function handleGpPhoto(e) {
+  const file=e.target.files[0]; if(!file) return;
+  const r=new FileReader(); r.onload=ev=>{ S.gpPhoto=ev.target.result; document.getElementById('gpPick').innerHTML=`<img src="${S.gpPhoto}" style="width:88px;height:88px;object-fit:cover;border-radius:50%">`; }; r.readAsDataURL(file);
+}
+function createGroup() {
+  const name=document.getElementById('gpNameIn').value.trim();
+  if (!name){ document.getElementById('gpNameErr').classList.add('show'); return; }
+  const grp={id:Date.now(), name, type:'group', color:rndColor(), photo:S.gpPhoto, members:[...S.selectedMembers]};
+  S.chats.push(grp); S.messages[grp.id]=[]; persistS(); renderChats();
+  goTab('chats'); showToast('گروه «'+name+'» ساخته شد ✅'); openChat(grp);
+}
+
+// ═══════════════════════════════════════════
+// DIRECT CHAT
+// ═══════════════════════════════════════════
+function openDirectChat() {
+  const list=document.getElementById('directChatList'); list.innerHTML='';
+  if (!S.contacts.length){ list.innerHTML='<div class="empty"><p>مخاطبی ندارید</p></div>'; }
+  else S.contacts.forEach(c=>{ const row=document.createElement('div'); row.className='contact-row'; row.innerHTML=`<div class="av" style="width:44px;height:44px;font-size:16px;background:${c.color}">${c.name[0]}</div><div><div style="font-size:15px;font-weight:600;color:var(--text)">${c.name}</div><div style="font-size:12px;color:var(--sub)">${c.phone}</div></div>`; row.onclick=()=>{ closeSheet('directChat'); openChat(c); }; list.appendChild(row); });
+  openSheet('directChat');
+}
+
+// ═══════════════════════════════════════════
+// CHAT LIST
+// ═══════════════════════════════════════════
+function renderChats(filter='') {
+  const list=document.getElementById('chats-list'); list.innerHTML='';
+  const filtered=S.chats.filter(c=>!filter||c.name.includes(filter));
+  if (!filtered.length){ list.innerHTML='<div class="empty"><svg width="56" height="56" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><p>هنوز چتی ندارید<br>با دکمه ✏️ شروع کنید</p></div>'; return; }
+  [...filtered].reverse().forEach(ch=>{
+    const msgs=S.messages[ch.id]||[], last=msgs[msgs.length-1];
+    const row=document.createElement('div'); row.className='chat-row';
+    const icon=ch.type==='channel'?'📢 ':ch.type==='group'?'👥 ':'';
+    let avHtml=ch.photo?`<div class="av" style="width:52px;height:52px"><img src="${ch.photo}"></div>`:`<div class="av" style="width:52px;height:52px;font-size:20px;background:${ch.color}">${ch.name[0]}</div>`;
+    row.innerHTML=`${avHtml}<div class="chat-info"><div class="chat-name">${icon}${ch.name}</div><div class="chat-preview">${last?last.text:'شروع گفتگو...'}</div></div><div class="chat-meta"><div class="chat-time">${last?last.time:''}</div></div>`;
+    row.onclick=()=>openChat(ch); list.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════
+// OPEN CHAT
+// ═══════════════════════════════════════════
+function openChat(entity) {
+  S.currentChat=entity;
+  if (!S.chats.find(c=>c.id===entity.id)){ S.chats.push(entity); S.messages[entity.id]=[]; }
+  if (!S.messages[entity.id]) S.messages[entity.id]=[];
+  document.getElementById('ctName').textContent=entity.name;
+  const av=document.getElementById('ctAv');
+  if (entity.photo){ av.innerHTML=`<img src="${entity.photo}">`; av.style.background='none'; }
+  else { av.textContent=entity.name[0]; av.style.background=entity.color; }
+  document.getElementById('ctStatus').textContent=entity.type==='group'?toFaNum((entity.members||[]).length)+' عضو':entity.type==='channel'?'کانال عمومی':entity.phone||'';
+  renderMsgs(); document.getElementById('ciField').textContent=''; push('sc-chat');
+}
+
+// ═══════════════════════════════════════════
+// MESSAGES
+// ═══════════════════════════════════════════
+function renderMsgs() {
+  const area=document.getElementById('msgsArea'); area.innerHTML='';
+  area.style.background=WALLPAPERS[S.wallpaper]||WALLPAPERS.default;
+  const msgs=S.messages[S.currentChat.id]||[];
+  if (!msgs.length){ area.innerHTML='<div class="date-sep">شروع مکالمه</div>'; return; }
+  let lastDate='';
+  msgs.forEach(m=>{
+    if (m.date&&m.date!==lastDate){ lastDate=m.date; const sep=document.createElement('div'); sep.className='date-sep'; sep.textContent=m.date; area.appendChild(sep); }
+    const div=document.createElement('div'); div.className='msg '+m.dir;
+    div.style.background=m.dir==='out'?S.msgColor:'#fff';
+    div.innerHTML=(m.dir==='in'&&S.currentChat.type==='group'&&m.sender?`<div class="msg-sender">${m.sender}</div>`:'')+`<div>${m.text}</div><div class="msg-time">${m.time}</div>`;
+    area.appendChild(div);
+  });
+  area.scrollTop=area.scrollHeight;
+}
+function ciKeydown(e){ if(e.key==='Enter'&&!e.shiftKey){ e.preventDefault(); sendMsg(); } }
+function sendMsg() {
+  const field=document.getElementById('ciField'), text=field.textContent.trim();
+  if (!text||!S.currentChat) return;
+  field.textContent='';
+  const now=new Date(), time=now.getHours().toString().padStart(2,'0')+':'+now.getMinutes().toString().padStart(2,'0'), dateStr=now.toLocaleDateString('fa-IR',{month:'long',day:'numeric'});
+  S.messages[S.currentChat.id].push({text,dir:'out',time,date:dateStr});
+  persistS(); renderMsgs(); renderChats();
+}
+function muteChat(){ closeSheet('chatMenu'); showToast('چت بی‌صدا شد 🔕'); }
+function blockFromChat() {
+  closeSheet('chatMenu');
+  if (S.currentChat&&!S.blocked.find(b=>b.id===S.currentChat.id)){ S.blocked.push(S.currentChat); persistS(); renderBlocked(); updateBlockedLabel(); showToast(S.currentChat.name+' مسدود شد ⛔'); }
+  else showToast('این کاربر قبلاً مسدود شده');
+}
+function clearChat() {
+  closeSheet('chatMenu');
+  if (S.currentChat&&confirm('تاریخچه چت «'+S.currentChat.name+'» پاک شود؟')){ S.messages[S.currentChat.id]=[]; persistS(); renderMsgs(); renderChats(); showToast('تاریخچه پاک شد 🗑️'); }
+}
+
+// ═══════════════════════════════════════════
+// PROFILE
+// ═══════════════════════════════════════════
+function renderProfile() {
+  const p = S.profile;
+  const fullName = ((p.first||'') + ' ' + (p.last||'')).trim();
+  // Cursive name
+  document.getElementById('pCursiveName').textContent = fullName || 'نام خود را وارد کنید';
+  // Info card
+  document.getElementById('pPhoneDisplay').textContent = p.phone || ('0' + S.phone);
+  document.getElementById('pBioDisplay').textContent   = p.bio || '—';
+  document.getElementById('pUsernameDisplay').textContent = p.username ? '@'+p.username.replace('@','') : '—';
+  document.getElementById('pBirthdayDisplay').textContent = p.birthday || '—';
+  // Avatar
+  const av = document.getElementById('profileAv');
+  if (p.photo){ av.innerHTML=`<img src="${p.photo}">`; av.style.background='none'; }
+  else { av.innerHTML=fullName?fullName[0]:'؟'; av.style.background='linear-gradient(135deg,#2AABEE,#6c5ce7)'; }
+  // Music
+  document.getElementById('musicText').textContent = p.music || 'بدون آهنگ';
+  // Update settings header too
+  renderSettingsHeader();
+}
+function handleProfilePhoto(e) {
+  const file=e.target.files[0]; if (!file) return;
+  const r=new FileReader(); r.onload=ev=>{ S.profile.photo=ev.target.result; renderProfile(); persistS(); showToast('عکس پروفایل تغییر کرد ✅'); }; r.readAsDataURL(file);
+}
+function openEditProfile() {
+  document.getElementById('ep-first').value=S.profile.first||'';
+  document.getElementById('ep-last').value=S.profile.last||'';
+  document.getElementById('ep-username').value=S.profile.username||'';
+  document.getElementById('ep-birthday').value=S.profile.birthday||'';
+  document.getElementById('ep-bio').value=S.profile.bio||'';
+  openSheet('editProfile');
+}
+function saveProfile() {
+  S.profile.first=document.getElementById('ep-first').value.trim();
+  S.profile.last=document.getElementById('ep-last').value.trim();
+  S.profile.username=document.getElementById('ep-username').value.trim();
+  S.profile.birthday=document.getElementById('ep-birthday').value.trim();
+  S.profile.bio=document.getElementById('ep-bio').value.trim();
+  persistS(); renderProfile(); closeSheet('editProfile'); showToast('پروفایل ذخیره شد ✅');
+}
+function switchPostTab(tab, el) {
+  document.querySelectorAll('.ptab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+}
+function confirmLogout() {
+  if (confirm('از حساب کاربری خارج شوید؟\n(داده‌ها حفظ می‌شوند)')) {
+    persistS();
+    clearSession();    // ← مهم: پاک کردن session
+    S.phone = '';
+    document.getElementById('login-step1').style.display='flex';
+    document.getElementById('login-step2').style.display='none';
+    document.getElementById('phoneInp').value='';
+    showScreen('sc-login', false);
+    showToast('از حساب خارج شدید');
+  }
+}
+
+// ═══════════════════════════════════════════
+// PRIVACY
+// ═══════════════════════════════════════════
+let _privKey='';
+function openPrivOpt(key, title) {
+  _privKey=key; document.getElementById('privOptTitle').textContent=title;
+  const body=document.getElementById('privOptBody'); body.innerHTML='';
+  ['همه','مخاطبین','هیچ‌کس'].forEach(o=>{
+    const row=document.createElement('div'); row.className='lang-row';
+    row.innerHTML=`<div class="lang-radio ${S.privacy[key]===o?'sel':''}"></div><div class="lang-name">${o}</div>`;
+    row.onclick=()=>{ S.privacy[key]=o; updatePrivacyLabels(); persistS(); closeSheet('privOpt'); showToast(title+': '+o+' ✅'); };
+    body.appendChild(row);
+  });
+  openSheet('privOpt');
+}
+function updatePrivacyLabels() {
+  ['phone','lastSeen','photo'].forEach(k=>{ const el=document.getElementById('priv-'+k); if(el) el.textContent=S.privacy[k]||''; });
+}
+function updateTwoStepSub() {
+  document.getElementById('twoStepSub').textContent=S.settings.twoStep?'روشن ✅':'خاموش';
+}
+function renderBlocked() {
+  const list=document.getElementById('blocked-list'), empty=document.getElementById('blocked-empty');
+  list.querySelectorAll('.blk-row').forEach(r=>r.remove());
+  empty.style.display=S.blocked.length?'none':'flex';
+  S.blocked.forEach(b=>{ const row=document.createElement('div'); row.className='blk-row'; row.style.cssText='display:flex;align-items:center;gap:12px;padding:12px 16px;border-bottom:1px solid var(--gray-m)'; row.innerHTML=`<div class="av" style="width:44px;height:44px;font-size:16px;background:${b.color||'#2AABEE'}">${b.name[0]}</div><div style="flex:1"><div style="font-size:14px;font-weight:600;color:var(--text)">${b.name}</div></div><button class="unblock-btn" onclick="unblock(${b.id})">رفع مسدود</button>`; list.insertBefore(row,list.firstChild); });
+}
+function unblock(id){ S.blocked=S.blocked.filter(b=>b.id!==id); persistS(); renderBlocked(); updateBlockedLabel(); showToast('رفع مسدود شد ✅'); }
+function updateBlockedLabel(){ document.getElementById('blockedCountLabel').textContent=toFaNum(S.blocked.length)+' نفر'; }
+
+// ═══════════════════════════════════════════
+// APPEARANCE
+// ═══════════════════════════════════════════
+function changeFontSize(el) {
+  const v=parseInt(el.value);
+  document.documentElement.style.setProperty('--font-size',v+'px');
+  document.getElementById('fontSizeVal').textContent=toFaNum(v);
+  S.settings.fontSize=v; persistS();
+}
+function setMsgColor(color, el) {
+  S.msgColor=color; document.documentElement.style.setProperty('--msg-out',color);
+  document.querySelectorAll('[onclick^="setMsgColor"]').forEach(c=>c.style.border='3px solid transparent');
+  el.style.border='3px solid '+color;
+  persistS(); showToast('رنگ پیام تغییر کرد ✅');
+}
+function setWallpaper(key, el) {
+  S.wallpaper=key; document.documentElement.style.setProperty('--chat-bg',WALLPAPERS[key]);
+  document.querySelectorAll('.wp-item').forEach(w=>w.classList.remove('sel'));
+  el.classList.add('sel');
+  persistS(); showToast('کاغذدیواری تغییر کرد ✅');
+}
+
+// ═══════════════════════════════════════════
+// LANGUAGE
+// ═══════════════════════════════════════════
+function renderLangList() {
+  const list=document.getElementById('langList'); list.innerHTML='';
+  LANGUAGES.forEach(l=>{
+    const row=document.createElement('div'); row.className='s-row'; row.style.cursor='pointer';
+    row.innerHTML=`<div class="lang-radio ${S.lang===l.code?'sel':''}" id="lr-${l.code}"></div><div class="s-info"><div class="s-lbl">${l.name}</div><div class="s-sub">${l.native}</div></div>`;
+    row.onclick=()=>{ S.lang=l.code; document.querySelectorAll('[id^="lr-"]').forEach(r=>r.classList.remove('sel')); document.getElementById('lr-'+l.code).classList.add('sel'); document.getElementById('curLangLabel').textContent=l.name; persistS(); showToast('زبان به '+l.name+' تغییر کرد ✅'); };
+    list.appendChild(row);
+  });
+}
+
+// ═══════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════
+function rndColor(){ return COLORS[Math.floor(Math.random()*COLORS.length)]; }
+function toFaNum(n){ return n.toString().replace(/[0-9]/g,d=>'۰۱۲۳۴۵۶۷۸۹'[d]); }
+</script>
+</body>
+</html>
